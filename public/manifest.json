@@ -1,10 +1,23 @@
 {
     "manifest_version": 3,
-    "name": "React Chrome Extension",
+    "name": "Axiom Parser Extension",
     "version": "1.0.0",
-    "description": "A simple React app as a Chrome extension",
+    "description": "A Chrome extension to parse and store content from Axiom",
     "action": {
       "default_popup": "index.html"
     },
-    "permissions": []
-  }
+    "permissions": [
+        "scripting",
+        "activeTab"
+    ],
+    "host_permissions": ["https://app.axiom.co/*"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://app.axiom.co/*"],
+            "js": ["content.js"]
+        }
+    ]
+}

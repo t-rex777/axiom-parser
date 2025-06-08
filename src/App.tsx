@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [status, setStatus] = useState('');
+
+  const handleManualParse = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      console.log("Active tabs:", tabs);
+
+      if (tabs[0]?.id) {
+        console.log("Sending message to tab:", tabs[0].id, "URL:", tabs[0].url);
+
+        chrome.tabs.sendMessage(tabs[0].id, {
+          type: "MANUAL_PARSE"
+        }, (response) => {
+          console.log("Response", response);
+
+          // Check for chrome runtime errors
+          if (chrome.runtime.lastError) {
+            console.error("Chrome runtime error:", chrome.runtime.lastError);
+            setStatus(`Error: ${chrome.runtime.lastError.message}`);
+            return;
+          }
+
+          if (response?.success) {
+            setStatus('Content parsed and stored successfully!');
+          } else {
+            setStatus('Failed to parse content. Make sure you\'re on app.axiom.co');
+          }
+        });
+      } else {
+        console.error("No active tab found");
+        setStatus('No active tab found');
+      }
+    });
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="popup-container">
+      <h2>Axiom Parser</h2>
+
+      <button
+        className="parse-button"
+        onClick={handleManualParse}
+      >
+        Parse Now
+      </button>
+
+      {status && (
+        <div className={`status ${status.includes('success') ? 'success' : ''}`}>
+          {status}
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
