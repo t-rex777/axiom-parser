@@ -1,27 +1,28 @@
 {
-	"manifest_version": 3,
-	"name": "Axiom Parser Extension",
-	"version": "1.0.0",
-	"description": "A Chrome extension to parse and store content from Axiom",
-	"action": {
-		"default_popup": "index.html"
-	},
-	"permissions": ["scripting", "activeTab"],
-	"host_permissions": ["https://app.axiom.co/*"],
-	"background": {
-		"service_worker": "background.js"
-	},
-	"content_scripts": [
-		{
-			"matches": ["https://app.axiom.co/*"],
-			"js": ["content.js"],
-			"css": ["css/pretty-print-json.dark-mode.css"]
-		}
-	],
-	"web_accessible_resources": [
-		{
-			"resources": ["css/pretty-print-json.dark-mode.css"],
-			"matches": ["https://app.axiom.co/*"]
-		}
-	]
+  "manifest_version": 3,
+  "name": "Axiom Parser Extension",
+  "version": "1.0.0",
+  "description": "A Chrome extension to parse and store content from Axiom",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["scripting", "activeTab", "tabs"],
+  "host_permissions": ["https://app.axiom.co/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://app.axiom.co/*"],
+      "js": ["content.js"],
+      "css": ["css/pretty-print-json.dark-mode.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["css/pretty-print-json.dark-mode.css"],
+      "matches": ["https://app.axiom.co/*"]
+    }
+  ]
 }

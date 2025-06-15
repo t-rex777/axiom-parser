@@ -83,7 +83,6 @@ npm run test:ui  # Interactive test UI
 - **Manifest V3** Chrome extension
 - **React 18** with TypeScript
 - **Vite** for building and development
-- **Vitest** for testing
 - **ESLint** for code quality
 - **CSS** with modern styling and toggle switches
 
@@ -107,3 +106,31 @@ npm run test:ui  # Interactive test UI
 ## License
 
 This project is licensed under the MIT License.
+
+## How It Works
+
+The Axiom Parser Chrome Extension operates by monitoring changes in the DOM of the Axiom application and automatically parsing content when changes are detected. Here's a step-by-step explanation of the process:
+
+1. **User Interaction**: The user enables the parser through the popup interface by toggling the switch.
+2. **Activation**: The content script is activated, which in turn enables the AxiomParser to start monitoring the DOM for changes.
+3. **Monitoring**: The AxiomParser continuously watches for any changes in the DOM structure of the Axiom application.
+4. **Detection**: Upon detecting a change, the AxiomParser automatically parses the new content, extracting URLs and JSON messages.
+5. **Parsing**: The parsed content is formatted and stored, ready to be displayed in the popup interface.
+6. **Feedback**: The popup interface is updated with the parsed data, providing the user with immediate feedback.
+
+Below is a sequence diagram illustrating this process:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Popup
+    participant ContentScript
+    participant AxiomParser
+    User->>Popup: Toggle Parser On
+    Popup->>ContentScript: Enable Parsing
+    ContentScript->>AxiomParser: Watch for DOM Changes
+    AxiomParser->>ContentScript: Notify on Content Change
+    ContentScript->>AxiomParser: Parse Content
+    AxiomParser->>ContentScript: Return Parsed Data
+    ContentScript->>Popup: Update UI with Parsed Data
+```
