@@ -17,16 +17,24 @@ export class AxiomParser {
   }
 
   static EXTRACT_URL_AND_MESSAGE_REGEX = /(?<url>(https?[^\s]+))\s\d+\s(?<message>(.+))/gm;
+  
   static TABLE_SELECTOR =
     ".BT1bDaA_R_wDkeIDeYw1.CdSU7o64fEHtp5nh4O96._ZUt0haF5VLIfPQNA9lo.VEsRnaqAVcUaNlI1Va3w.fxQ6jSfl8vOY363gzBVL.HxQKoDRiqnUNb5gbvbN1.AZJXOtCZ7vEdvGS9WSnF.NKCK_xX58HltNNmmhi3A.eiFnGUsidwZ6JDTiNVSf.QunlokZWSKQTwhecvLXv";
   static MESSAGE_SELECTOR = "._3wNHZmXAlVclKlsy7Gs";
+
+  static ROUTES = ["extension", "vercel"] as const;
+
+  private get route() {
+    const pathname = window.location.pathname.split("/").pop();
+    return AxiomParser.ROUTES.find((route) => pathname?.includes(route));
+  }
 
   private getTable(page: Document) {
     return page.querySelector(AxiomParser.TABLE_SELECTOR) as HTMLTableElement;
   }
 
   private getMessageElement(table: HTMLTableElement) {
-    return table.querySelectorAll(AxiomParser.MESSAGE_SELECTOR)[2].firstChild as HTMLDivElement;
+    return table.querySelectorAll(AxiomParser.MESSAGE_SELECTOR)[this.route === "extension" ? 2 : 1].firstChild as HTMLDivElement;
   }
 
   private getUrlAndMessage(messageElement: HTMLDivElement) {
